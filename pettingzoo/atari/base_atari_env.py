@@ -1,3 +1,4 @@
+import cv2
 import multi_agent_ale_py
 from pathlib import Path
 from pettingzoo import AECEnv
@@ -142,7 +143,10 @@ class ParallelAtariEnv(ParallelEnv, EzPickle):
         elif self.obs_type == 'rgb_image':
             return self.ale.getScreenRGB()
         elif self.obs_type == 'grayscale_image':
-            return self.ale.getScreenGrayscale()
+            frame = self.ale.getScreenRGB()
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+            frame = np.expand_dims(frame, -1)
+            return frame
 
     def step(self, action_dict):
         actions = np.zeros(self.max_num_agents, dtype=np.int32)
